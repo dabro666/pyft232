@@ -120,6 +120,9 @@ class D2xx(io.RawIOBase):
         self.handle = c.c_void_p()
         status = d2xx.FT_OpenEx(serial, FT_OPEN_BY_SERIAL_NUMBER,
                                 c.byref(self.handle))
+        if status != FT_OK:
+            status = d2xx.FT_OpenEx(serial, FT_OPEN_BY_DESCRIPTION,
+                                    c.byref(self.handle))
         if status != FT_OK: raise D2XXException(status)
 
         self.baudrate = baudrate
@@ -165,7 +168,7 @@ class D2xx(io.RawIOBase):
             return None
         else:
             return 'COM' + str(port_number)
-    
+
     def setBaudrate(self, baudrate):
         """Change the current baudrate."""
 
